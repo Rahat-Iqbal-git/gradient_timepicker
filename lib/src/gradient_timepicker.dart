@@ -20,9 +20,19 @@ Future<TimeOfDay?> showTimePickerSheet({
   );
 }
 
+/// A stateful widget that renders the custom gradient time picker UI.
+///
+/// This widget displays hour, minute, and AM/PM wheels inside a modal
+/// bottom sheet, allowing the user to choose a time with a polished,
+/// animated gradient background. It is typically created by
+/// [showTimePickerSheet] and accepts an optional [initialTime]
+/// to preselect the starting value.
 class TimePickerSheet extends StatefulWidget {
+  /// Creates a [TimePickerSheet], optionally pre-selecting [initialTime].
   const TimePickerSheet({super.key, this.initialTime});
 
+  /// The time pre-selected when the picker opens.
+  /// Defaults to [TimeOfDay.now] if null.
   final TimeOfDay? initialTime;
 
   @override
