@@ -48,7 +48,10 @@ class _TimePickerSheetState extends State<TimePickerSheet> {
     12,
     (i) => (i + 1).toString().padLeft(2, '0'),
   );
-  final List<String> _minutes = List.generate(60, (i) => i.toString().padLeft(2, '0'));
+  final List<String> _minutes = List.generate(
+    60,
+    (i) => i.toString().padLeft(2, '0'),
+  );
   final List<String> _periods = ['AM', 'PM'];
 
   late int _selectedHour;
@@ -67,8 +70,12 @@ class _TimePickerSheetState extends State<TimePickerSheet> {
     _selectedMinute = initial.minute;
 
     _hourController = FixedExtentScrollController(initialItem: _selectedHour);
-    _minuteController = FixedExtentScrollController(initialItem: _selectedMinute);
-    _periodController = FixedExtentScrollController(initialItem: _selectedPeriod);
+    _minuteController = FixedExtentScrollController(
+      initialItem: _selectedMinute,
+    );
+    _periodController = FixedExtentScrollController(
+      initialItem: _selectedPeriod,
+    );
   }
 
   @override
@@ -160,7 +167,8 @@ class _TimePickerSheetState extends State<TimePickerSheet> {
                           controller: _hourController,
                           items: _hours,
                           selectedIndex: _selectedHour,
-                          onSelectedItemChanged: (i) => setState(() => _selectedHour = i),
+                          onSelectedItemChanged: (i) =>
+                              setState(() => _selectedHour = i),
                           alignment: Alignment.centerRight,
                         ),
                       ),
@@ -307,7 +315,9 @@ class _WheelColumnState extends State<_WheelColumn> {
                     alpha: opacity.clamp(0.0, 1.0),
                   ),
                   fontSize: fontSize,
-                  fontWeight: distance < 0.5 ? FontWeight.w600 : FontWeight.w400,
+                  fontWeight: distance < 0.5
+                      ? FontWeight.w600
+                      : FontWeight.w400,
                   height: 1,
                 ),
               ),
