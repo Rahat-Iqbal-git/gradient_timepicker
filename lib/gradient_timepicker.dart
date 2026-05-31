@@ -1,4 +1,5 @@
-/// A flutter package
+/// A flutter package for displaying a custom gradient time picker
+/// in a bottom sheet.
 library;
 
 export 'src/gradient_timepicker.dart';
