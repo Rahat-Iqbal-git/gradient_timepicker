@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
 
+/// Displays a custom gradient time picker in a bottom sheet.
+///
+/// The sheet allows the user to select an hour, minute, and AM/PM period
+/// using a wheel-style picker. The current time is used when [initialTime]
+/// is not provided.
+///
+/// Returns the selected [TimeOfDay] when the user taps the "Done" button,
+/// or `null` if the sheet is dismissed without choosing a time.
 Future<TimeOfDay?> showTimePickerSheet({
   required BuildContext context,
   TimeOfDay? initialTime,
