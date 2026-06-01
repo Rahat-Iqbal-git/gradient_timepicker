@@ -42,8 +42,9 @@ void main() {
     expect(await result, equals(const TimeOfDay(hour: 7, minute: 30)));
   });
 
-  testWidgets('returns null when sheet is dismissed without selecting',
-      (tester) async {
+  testWidgets('returns null when sheet is dismissed without selecting', (
+    tester,
+  ) async {
     late Future<TimeOfDay?> result;
     await _pumpPicker(
       tester,
@@ -57,8 +58,9 @@ void main() {
     expect(await result, isNull);
   });
 
-  testWidgets('correctly converts midnight (00:00) to 12:00 AM',
-      (tester) async {
+  testWidgets('correctly converts midnight (00:00) to 12:00 AM', (
+    tester,
+  ) async {
     late Future<TimeOfDay?> result;
     await _pumpPicker(
       tester,
@@ -114,7 +116,9 @@ void main() {
     expect(await result, equals(const TimeOfDay(hour: 13, minute: 45)));
   });
 
-  testWidgets('shows Done button and AM/PM options when opened', (tester) async {
+  testWidgets('shows Done button and AM/PM options when opened', (
+    tester,
+  ) async {
     await _pumpPicker(
       tester,
       capture: (_) {},
@@ -126,8 +130,9 @@ void main() {
     expect(find.text('PM'), findsOneWidget);
   });
 
-  testWidgets('returns a valid TimeOfDay when no initialTime is provided',
-      (tester) async {
+  testWidgets('returns a valid TimeOfDay when no initialTime is provided', (
+    tester,
+  ) async {
     late Future<TimeOfDay?> result;
     await _pumpPicker(tester, capture: (f) => result = f);
 
