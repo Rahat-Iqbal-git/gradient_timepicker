@@ -19,3 +19,28 @@ jobs:
       includes: "**/*.md"
       modified_files_only: false
 
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Format check
+        run: dart format --set-exit-if-changed .
+
+      - name: Analyze
+        run: flutter analyze --fatal-infos
+
+      - name: Run tests
+        run: flutter test --coverage
+
+      - name: Check coverage
+        uses: VeryGoodOpenSource/very_good_coverage@v3
+        with:
+          min_coverage: 70

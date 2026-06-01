@@ -1,56 +1,94 @@
 # Gradient Timepicker
 
+[![pub.dev][pub_badge]][pub_link]
 [![License: MIT][license_badge]][license_link]
 
-A flutter package
+A beautiful gradient time picker for Flutter. Opens as a bottom sheet with smooth scroll-wheel selection for hour, minute, and AM/PM. The background gradient animates between a bright blue (AM) and deep navy (PM) theme.
 
-## Installation 💻
+---
 
-**❗ In order to start using Gradient Timepicker you must have the [Flutter SDK][flutter_install_link] installed on your machine.**
+## Features
 
-Install via `flutter pub add`:
+- Wheel-style scroll pickers for hour, minute, and AM/PM
+- Animated gradient background that shifts between AM and PM colour schemes
+- Returns the selected `TimeOfDay`, or `null` if dismissed
+- Accepts an optional `initialTime`; falls back to `TimeOfDay.now()`
+- Safe-area aware bottom padding
+
+---
+
+## Installation
 
 ```sh
-dart pub add gradient_timepicker
+flutter pub add gradient_timepicker
 ```
 
+---
 
-## Running Tests 🧪
+## Usage
 
-For first time users, install the [very_good_cli][very_good_cli_link]:
+```dart
+import 'package:gradient_timepicker/gradient_timepicker.dart';
 
-```sh
-dart pub global activate very_good_cli
+// Inside a widget with a BuildContext:
+final TimeOfDay? picked = await showTimePickerSheet(
+  context: context,
+  initialTime: TimeOfDay.now(),
+);
+
+if (picked != null) {
+  print('Selected: ${picked.format(context)}');
+}
 ```
 
-To run all unit tests:
+---
 
-```sh
-very_good test --coverage
+## API
+
+### `showTimePickerSheet`
+
+```dart
+Future<TimeOfDay?> showTimePickerSheet({
+  required BuildContext context,
+  TimeOfDay? initialTime,
+})
 ```
 
-To view the generated coverage report you can use [lcov](https://github.com/linux-test-project/lcov).
+| Parameter     | Type          | Required | Description                                      |
+|---------------|---------------|----------|--------------------------------------------------|
+| `context`     | `BuildContext`| yes      | The build context used to show the bottom sheet. |
+| `initialTime` | `TimeOfDay?`  | no       | Pre-selected time. Defaults to `TimeOfDay.now()` |
+
+**Returns** the `TimeOfDay` chosen by the user, or `null` if the sheet is dismissed.
+
+---
+
+### `TimePickerSheet`
+
+The underlying `StatefulWidget` if you need to embed the picker directly:
+
+```dart
+TimePickerSheet(initialTime: const TimeOfDay(hour: 9, minute: 0))
+```
+
+---
+
+## Running Tests
 
 ```sh
-# Generate Coverage Report
+flutter test --coverage
+```
+
+To view the generated coverage report you can use [lcov](https://github.com/linux-test-project/lcov):
+
+```sh
 genhtml coverage/lcov.info -o coverage/
-
-# Open Coverage Report
 open coverage/index.html
 ```
 
-[flutter_install_link]: https://docs.flutter.dev/get-started/install
-[github_actions_link]: https://docs.github.com/en/actions/learn-github-actions
+---
+
+[pub_badge]: https://img.shields.io/pub/v/gradient_timepicker.svg
+[pub_link]: https://pub.dev/packages/gradient_timepicker
 [license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [license_link]: https://opensource.org/licenses/MIT
-[logo_black]: https://raw.githubusercontent.com/VGVentures/very_good_brand/main/styles/README/vgv_logo_black.png#gh-light-mode-only
-[logo_white]: https://raw.githubusercontent.com/VGVentures/very_good_brand/main/styles/README/vgv_logo_white.png#gh-dark-mode-only
-[mason_link]: https://github.com/felangel/mason
-[very_good_analysis_badge]: https://img.shields.io/badge/style-very_good_analysis-B22C89.svg
-[very_good_analysis_link]: https://pub.dev/packages/very_good_analysis
-[very_good_cli_link]: https://pub.dev/packages/very_good_cli
-[very_good_coverage_link]: https://github.com/marketplace/actions/very-good-coverage
-[very_good_ventures_link]: https://verygood.ventures
-[very_good_ventures_link_light]: https://verygood.ventures#gh-light-mode-only
-[very_good_ventures_link_dark]: https://verygood.ventures#gh-dark-mode-only
-[very_good_workflows_link]: https://github.com/VeryGoodOpenSource/very_good_workflows
