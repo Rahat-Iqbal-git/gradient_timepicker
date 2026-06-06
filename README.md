@@ -7,6 +7,12 @@ A beautiful gradient time picker for Flutter. Opens as a bottom sheet with smoot
 
 ---
 
+## Showcase
+
+![Gradient Timepicker demo](https://raw.githubusercontent.com/Rahat-Iqbal-git/gradient_timepicker/main/assets/demo.gif)
+
+---
+
 ## Features
 
 - Wheel-style scroll pickers for hour, minute, and AM/PM
