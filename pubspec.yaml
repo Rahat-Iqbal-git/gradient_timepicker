@@ -1,6 +1,6 @@
 name: gradient_timepicker
 description: A beautiful gradient time picker widget for Flutter with smooth scroll-wheel selection and AM/PM support.
-version: 0.1.0+1
+version: 0.1.0+2
 homepage: https://github.com/Rahat-Iqbal-git/gradient_timepicker
 repository: https://github.com/Rahat-Iqbal-git/gradient_timepicker
 issue_tracker: https://github.com/Rahat-Iqbal-git/gradient_timepicker/issues
