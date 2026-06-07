@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.0+2
+
+- Add demo GIF to Showcase section in README
+
+
 ## 0.1.0+1
 
 - Initial release
