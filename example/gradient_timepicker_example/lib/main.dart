@@ -23,25 +23,44 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  TimeOfDay? _selectedTime;
+  TimeOfDay? _selectedTime12;
+  TimeOfDay? _selectedTime24;
 
-  Future<void> _openTimePicker() async {
+  Future<void> _openTimePicker12() async {
     final result = await showTimePickerSheet(
       context: context,
-      initialTime: _selectedTime,
+      initialTime: _selectedTime12,
     );
     if (result != null) {
-      setState(() => _selectedTime = result);
+      setState(() => _selectedTime12 = result);
     }
   }
 
-  String get _timeLabel {
-    if (_selectedTime == null) return 'No time selected';
-    final raw = _selectedTime!.hourOfPeriod;
+  Future<void> _openTimePicker24() async {
+    final result = await showTimePickerSheet(
+      context: context,
+      initialTime: _selectedTime24,
+      use24Hour: true,
+    );
+    if (result != null) {
+      setState(() => _selectedTime24 = result);
+    }
+  }
+
+  String _format12(TimeOfDay? time) {
+    if (time == null) return 'No time selected';
+    final raw = time.hourOfPeriod;
     final h = raw == 0 ? 12 : raw;
-    final m = _selectedTime!.minute.toString().padLeft(2, '0');
-    final period = _selectedTime!.period == DayPeriod.am ? 'AM' : 'PM';
+    final m = time.minute.toString().padLeft(2, '0');
+    final period = time.period == DayPeriod.am ? 'AM' : 'PM';
     return '${h.toString().padLeft(2, '0')}:$m $period';
+  }
+
+  String _format24(TimeOfDay? time) {
+    if (time == null) return 'No time selected';
+    final h = time.hour.toString().padLeft(2, '0');
+    final m = time.minute.toString().padLeft(2, '0');
+    return '$h:$m';
   }
 
   @override
@@ -58,32 +77,78 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              _timeLabel,
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.w600,
-                color: _selectedTime == null ? Colors.black26 : Colors.black87,
-              ),
+            _PickerCard(
+              label: '12-hour',
+              timeLabel: _format12(_selectedTime12),
+              hasSelection: _selectedTime12 != null,
+              onTap: _openTimePicker12,
             ),
             const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: _openTimePicker,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF1A3A8F),
-                foregroundColor: Colors.white,
-                minimumSize: const Size(200, 52),
-                shape: const StadiumBorder(),
-                elevation: 0,
-              ),
-              child: const Text(
-                'Select time',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-              ),
+            _PickerCard(
+              label: '24-hour',
+              timeLabel: _format24(_selectedTime24),
+              hasSelection: _selectedTime24 != null,
+              onTap: _openTimePicker24,
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _PickerCard extends StatelessWidget {
+  const _PickerCard({
+    required this.label,
+    required this.timeLabel,
+    required this.hasSelection,
+    required this.onTap,
+  });
+
+  final String label;
+  final String timeLabel;
+  final bool hasSelection;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+            color: Colors.black45,
+            letterSpacing: 1,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          timeLabel,
+          style: TextStyle(
+            fontSize: 32,
+            fontWeight: FontWeight.w600,
+            color: hasSelection ? Colors.black87 : Colors.black26,
+          ),
+        ),
+        const SizedBox(height: 16),
+        ElevatedButton(
+          onPressed: onTap,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF1A3A8F),
+            foregroundColor: Colors.white,
+            minimumSize: const Size(200, 52),
+            shape: const StadiumBorder(),
+            elevation: 0,
+          ),
+          child: const Text(
+            'Select time',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+        ),
+      ],
     );
   }
 }
