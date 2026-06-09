@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gradient_timepicker/src/time_picker_gradient.dart';
 
 /// Displays a custom gradient time picker in a bottom sheet.
 ///
@@ -15,6 +16,7 @@ Future<TimeOfDay?> showTimePickerSheet({
   TimeOfDay? initialTime,
   bool use24Hour = false,
   String buttonText = 'Done',
+  TimePickerGradient gradient = TimePickerGradient.defaultGradient,
 }) {
   return showModalBottomSheet<TimeOfDay>(
     context: context,
@@ -24,6 +26,7 @@ Future<TimeOfDay?> showTimePickerSheet({
       initialTime: initialTime,
       use24Hour: use24Hour,
       buttonText: buttonText,
+      gradient: gradient,
     ),
   );
 }
@@ -44,6 +47,7 @@ class TimePickerSheet extends StatefulWidget {
     this.initialTime,
     this.use24Hour = false,
     this.buttonText = 'Done',
+    this.gradient = TimePickerGradient.defaultGradient,
   });
 
   /// The time pre-selected when the picker opens.
@@ -55,6 +59,10 @@ class TimePickerSheet extends StatefulWidget {
 
   /// The label displayed on the confirm button. Defaults to 'Done'.
   final String buttonText;
+
+  /// The gradient color preset for AM and PM states.
+  /// Defaults to [TimePickerGradient.defaultGradient].
+  final TimePickerGradient gradient;
 
   @override
   State<TimePickerSheet> createState() => _TimePickerSheetState();
@@ -142,17 +150,8 @@ class _TimePickerSheetState extends State<TimePickerSheet> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: _selectedPeriod == 0
-                ? const [
-                    Color(0xFF007AFF),
-                    Color(0xFF1C4C8E),
-                    Color(0xFF6B7D8E),
-                  ]
-                : const [
-                    Color(0xFF0A0F2E),
-                    Color(0xFF1A3A8F),
-                    Color(0xFF1565C0),
-                  ],
-            stops: const [0.0, 0.5, 1.0],
+                ? widget.gradient.amColors
+                : widget.gradient.pmColors,
           ),
           borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         ),

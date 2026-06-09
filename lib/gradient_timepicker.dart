@@ -3,3 +3,4 @@
 library;
 
 export 'src/gradient_timepicker.dart';
+export 'src/time_picker_gradient.dart';
