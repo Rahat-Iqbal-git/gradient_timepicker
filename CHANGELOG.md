@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.0
+
+- Add `use24Hour` parameter to `showTimePickerSheet` and `TimePickerSheet` for 24-hour clock support
+- 24-hour mode shows hours `00–23` and hides the AM/PM wheel
+
 ## 0.1.0+2
 
 - Add demo GIF to Showcase section in README
