@@ -19,8 +19,7 @@ Future<TimeOfDay?> showTimePickerSheet({
     context: context,
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
-    builder: (_) =>
-        TimePickerSheet(initialTime: initialTime, use24Hour: use24Hour),
+    builder: (_) => TimePickerSheet(initialTime: initialTime, use24Hour: use24Hour),
   );
 }
 
@@ -170,13 +169,18 @@ class _TimePickerSheetState extends State<TimePickerSheet> {
                           controller: _hourController,
                           items: _hours,
                           selectedIndex: _selectedHour,
-                          onSelectedItemChanged: (i) =>
-                              setState(() => _selectedHour = i),
+                          onSelectedItemChanged: (i) => setState(
+                            () => _selectedHour = i,
+                          ),
                           alignment: Alignment.centerRight,
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 4),
+                        padding: EdgeInsets.only(
+                          bottom: 4,
+                          left: widget.use24Hour ? 10 : 0,
+                          right: widget.use24Hour ? 10 : 0,
+                        ),
                         child: Text(
                           ':',
                           style: TextStyle(
@@ -319,9 +323,7 @@ class _WheelColumnState extends State<_WheelColumn> {
                     alpha: opacity.clamp(0.0, 1.0),
                   ),
                   fontSize: fontSize,
-                  fontWeight: distance < 0.5
-                      ? FontWeight.w600
-                      : FontWeight.w400,
+                  fontWeight: distance < 0.5 ? FontWeight.w600 : FontWeight.w400,
                   height: 1,
                 ),
               ),
