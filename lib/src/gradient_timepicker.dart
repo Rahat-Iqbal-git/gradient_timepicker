@@ -6,17 +6,21 @@ import 'package:flutter/material.dart';
 /// using a wheel-style picker. The current time is used when [initialTime]
 /// is not provided.
 ///
+/// Set [use24Hour] to true to show a 24-hour clock without the AM/PM wheel.
+///
 /// Returns the selected [TimeOfDay] when the user taps the "Done" button,
 /// or `null` if the sheet is dismissed without choosing a time.
 Future<TimeOfDay?> showTimePickerSheet({
   required BuildContext context,
   TimeOfDay? initialTime,
+  bool use24Hour = false,
 }) {
   return showModalBottomSheet<TimeOfDay>(
     context: context,
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
-    builder: (_) => TimePickerSheet(initialTime: initialTime),
+    builder: (_) =>
+        TimePickerSheet(initialTime: initialTime, use24Hour: use24Hour),
   );
 }
 
@@ -27,13 +31,18 @@ Future<TimeOfDay?> showTimePickerSheet({
 /// animated gradient background. It is typically created by
 /// [showTimePickerSheet] and accepts an optional [initialTime]
 /// to preselect the starting value.
+///
+/// Set [use24Hour] to true to show a 24-hour clock without the AM/PM wheel.
 class TimePickerSheet extends StatefulWidget {
   /// Creates a [TimePickerSheet], optionally pre-selecting [initialTime].
-  const TimePickerSheet({super.key, this.initialTime});
+  const TimePickerSheet({super.key, this.initialTime, this.use24Hour = false});
 
   /// The time pre-selected when the picker opens.
   /// Defaults to [TimeOfDay.now] if null.
   final TimeOfDay? initialTime;
+
+  /// Whether to use 24-hour format. Defaults to false.
+  final bool use24Hour;
 
   @override
   State<TimePickerSheet> createState() => _TimePickerSheetState();
@@ -42,12 +51,9 @@ class TimePickerSheet extends StatefulWidget {
 class _TimePickerSheetState extends State<TimePickerSheet> {
   late final FixedExtentScrollController _hourController;
   late final FixedExtentScrollController _minuteController;
-  late final FixedExtentScrollController _periodController;
+  FixedExtentScrollController? _periodController;
 
-  final List<String> _hours = List.generate(
-    12,
-    (i) => (i + 1).toString().padLeft(2, '0'),
-  );
+  late final List<String> _hours;
   final List<String> _minutes = List.generate(
     60,
     (i) => i.toString().padLeft(2, '0'),
@@ -63,36 +69,49 @@ class _TimePickerSheetState extends State<TimePickerSheet> {
     super.initState();
     final initial = widget.initialTime ?? TimeOfDay.now();
     final h = initial.hour;
-    // Convert 24h hour to 12h index (0-11 where 0 = "01" ... 11 = "12")
-    _selectedPeriod = h < 12 ? 0 : 1;
-    final hour12 = h % 12 == 0 ? 12 : h % 12;
-    _selectedHour = hour12 - 1;
+
+    if (widget.use24Hour) {
+      _hours = List.generate(24, (i) => i.toString().padLeft(2, '0'));
+      _selectedHour = h;
+      _selectedPeriod = h < 12 ? 0 : 1;
+    } else {
+      _hours = List.generate(12, (i) => (i + 1).toString().padLeft(2, '0'));
+      _selectedPeriod = h < 12 ? 0 : 1;
+      final hour12 = h % 12 == 0 ? 12 : h % 12;
+      _selectedHour = hour12 - 1;
+    }
     _selectedMinute = initial.minute;
 
     _hourController = FixedExtentScrollController(initialItem: _selectedHour);
     _minuteController = FixedExtentScrollController(
       initialItem: _selectedMinute,
     );
-    _periodController = FixedExtentScrollController(
-      initialItem: _selectedPeriod,
-    );
+    if (!widget.use24Hour) {
+      _periodController = FixedExtentScrollController(
+        initialItem: _selectedPeriod,
+      );
+    }
   }
 
   @override
   void dispose() {
     _hourController.dispose();
     _minuteController.dispose();
-    _periodController.dispose();
+    _periodController?.dispose();
     super.dispose();
   }
 
   void _onDone() {
-    final hour12 = _selectedHour + 1;
     final int hour;
-    if (_selectedPeriod == 0) {
-      hour = hour12 == 12 ? 0 : hour12;
+    if (widget.use24Hour) {
+      hour = _selectedHour;
     } else {
-      hour = hour12 == 12 ? 12 : hour12 + 12;
+      final hour12 = _selectedHour + 1;
+      if (_selectedPeriod == 0) {
+        hour = hour12 == 12 ? 0 : hour12;
+      } else {
+        hour = hour12 == 12 ? 12 : hour12 + 12;
+      }
     }
     Navigator.of(context).pop(TimeOfDay(hour: hour, minute: _selectedMinute));
   }
@@ -178,16 +197,17 @@ class _TimePickerSheetState extends State<TimePickerSheet> {
                           alignment: Alignment.centerLeft,
                         ),
                       ),
-                      SizedBox(
-                        width: 64,
-                        child: _PeriodColumn(
-                          controller: _periodController,
-                          periods: _periods,
-                          selectedIndex: _selectedPeriod,
-                          onSelectedItemChanged: (i) =>
-                              setState(() => _selectedPeriod = i),
+                      if (!widget.use24Hour)
+                        SizedBox(
+                          width: 64,
+                          child: _PeriodColumn(
+                            controller: _periodController!,
+                            periods: _periods,
+                            selectedIndex: _selectedPeriod,
+                            onSelectedItemChanged: (i) =>
+                                setState(() => _selectedPeriod = i),
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ],
