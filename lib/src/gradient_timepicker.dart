@@ -14,13 +14,17 @@ Future<TimeOfDay?> showTimePickerSheet({
   required BuildContext context,
   TimeOfDay? initialTime,
   bool use24Hour = false,
+  String buttonText = 'Done',
 }) {
   return showModalBottomSheet<TimeOfDay>(
     context: context,
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
-    builder: (_) =>
-        TimePickerSheet(initialTime: initialTime, use24Hour: use24Hour),
+    builder: (_) => TimePickerSheet(
+      initialTime: initialTime,
+      use24Hour: use24Hour,
+      buttonText: buttonText,
+    ),
   );
 }
 
@@ -35,7 +39,12 @@ Future<TimeOfDay?> showTimePickerSheet({
 /// Set [use24Hour] to true to show a 24-hour clock without the AM/PM wheel.
 class TimePickerSheet extends StatefulWidget {
   /// Creates a [TimePickerSheet], optionally pre-selecting [initialTime].
-  const TimePickerSheet({super.key, this.initialTime, this.use24Hour = false});
+  const TimePickerSheet({
+    super.key,
+    this.initialTime,
+    this.use24Hour = false,
+    this.buttonText = 'Done',
+  });
 
   /// The time pre-selected when the picker opens.
   /// Defaults to [TimeOfDay.now] if null.
@@ -43,6 +52,9 @@ class TimePickerSheet extends StatefulWidget {
 
   /// Whether to use 24-hour format. Defaults to false.
   final bool use24Hour;
+
+  /// The label displayed on the confirm button. Defaults to 'Done'.
+  final String buttonText;
 
   @override
   State<TimePickerSheet> createState() => _TimePickerSheetState();
@@ -232,12 +244,20 @@ class _TimePickerSheetState extends State<TimePickerSheet> {
                   backgroundColor: Colors.white70,
                   foregroundColor: Colors.black87,
                   minimumSize: const Size(200, 52),
+                  maximumSize: Size(
+                    MediaQuery.sizeOf(context).width * 0.8,
+                    52,
+                  ),
                   shape: const StadiumBorder(),
                   elevation: 0,
                 ),
-                child: const Text(
-                  'Done',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                child: Text(
+                  widget.buttonText,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ),
