@@ -151,7 +151,8 @@ class _TimePickerSheetState extends State<TimePickerSheet> {
                           controller: _hourController,
                           items: _hours,
                           selectedIndex: _selectedHour,
-                          onSelectedItemChanged: (i) => setState(() => _selectedHour = i),
+                          onSelectedItemChanged: (i) =>
+                              setState(() => _selectedHour = i),
                           alignment: Alignment.centerRight,
                         ),
                       ),
@@ -298,7 +299,9 @@ class _WheelColumnState extends State<_WheelColumn> {
                     alpha: opacity.clamp(0.0, 1.0),
                   ),
                   fontSize: fontSize,
-                  fontWeight: distance < 0.5 ? FontWeight.w600 : FontWeight.w400,
+                  fontWeight: distance < 0.5
+                      ? FontWeight.w600
+                      : FontWeight.w400,
                   height: 1,
                 ),
               ),
