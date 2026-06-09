@@ -142,22 +142,6 @@ class _TimePickerSheetState extends State<TimePickerSheet> {
               height: wheelsHeight,
               child: Stack(
                 children: [
-                  // Selection highlight bar
-                  // Center(
-                  //   child: Container(
-                  //     height: 60,
-                  //     decoration: BoxDecoration(
-                  //       gradient: LinearGradient(
-                  //         colors: [
-                  //           Colors.white.withValues(alpha: 0.01),
-                  //           Colors.white.withValues(alpha: 0.05),
-                  //           Colors.white.withValues(alpha: 0.01),
-                  //         ],
-                  //       ),
-                  //       borderRadius: BorderRadius.circular(12),
-                  //     ),
-                  //   ),
-                  // ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -329,7 +313,7 @@ class _WheelColumnState extends State<_WheelColumn> {
   }
 }
 
-class _PeriodColumn extends StatelessWidget {
+class _PeriodColumn extends StatefulWidget {
   const _PeriodColumn({
     required this.controller,
     required this.periods,
@@ -343,23 +327,61 @@ class _PeriodColumn extends StatelessWidget {
   final ValueChanged<int> onSelectedItemChanged;
 
   @override
+  State<_PeriodColumn> createState() => _PeriodColumnState();
+}
+
+class _PeriodColumnState extends State<_PeriodColumn> {
+  static const double _itemExtent = 60;
+
+  double _fractionalIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _fractionalIndex = widget.selectedIndex.toDouble();
+    widget.controller.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_onScroll);
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (widget.controller.hasClients) {
+      setState(() {
+        _fractionalIndex = widget.controller.offset / _itemExtent;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ListWheelScrollView(
-      controller: controller,
-      itemExtent: 60,
+      controller: widget.controller,
+      itemExtent: _itemExtent,
       diameterRatio: 100,
       physics: const FixedExtentScrollPhysics(),
-      onSelectedItemChanged: onSelectedItemChanged,
-      children: List.generate(periods.length, (index) {
-        final isSelected = index == selectedIndex;
-        final opacity = isSelected ? 1.0 : 0.3;
+      onSelectedItemChanged: widget.onSelectedItemChanged,
+      children: List.generate(widget.periods.length, (index) {
+        final distance = (index - _fractionalIndex).abs();
+        final proximity = (1 - distance).clamp(0.0, 1.0);
+        final fontSize = 16.0 + 4.0 * proximity;
+        final opacity = distance < 1
+            ? 1.0 - distance * 0.55
+            : distance < 2
+            ? 0.45 - (distance - 1) * 0.25
+            : 0.2;
+
         return Center(
           child: Text(
-            periods[index],
+            widget.periods[index],
             style: TextStyle(
-              color: Colors.white.withValues(alpha: opacity),
-              fontSize: isSelected ? 20 : 16,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+              color: Colors.white.withValues(alpha: opacity.clamp(0.0, 1.0)),
+              fontSize: fontSize,
+              fontWeight: distance < 0.5 ? FontWeight.w600 : FontWeight.w400,
+              height: 1,
             ),
           ),
         );
