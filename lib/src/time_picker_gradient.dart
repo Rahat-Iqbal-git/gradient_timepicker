@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 /// Defines the gradient colors used for the AM and PM states of the picker.
 ///
 /// Use one of the built-in presets (e.g. [TimePickerGradient.defaultGradient]).
+// ignore: use_enums
 class TimePickerGradient {
   const TimePickerGradient._({
     required this.amColors,
     required this.pmColors,
-    this.amTextColor = Colors.white,
-    this.pmTextColor = Colors.white,
+    required this.amTextColor,
+    required this.pmTextColor,
   });
 
   /// The gradient colors displayed during AM hours.
@@ -35,6 +36,8 @@ class TimePickerGradient {
       Color(0xFF1A3A8F),
       Color(0xFF1565C0),
     ],
+    amTextColor: Colors.white,
+    pmTextColor: Colors.white,
   );
 
   /// A soft frosted-glass palette: light blue-white for AM,
@@ -51,5 +54,6 @@ class TimePickerGradient {
       Color(0xFF111A28),
     ],
     amTextColor: Color(0xFF2C2C2C),
+    pmTextColor: Colors.white,
   );
 }
