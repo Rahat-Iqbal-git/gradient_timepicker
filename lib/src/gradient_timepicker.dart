@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:gradient_timepicker/src/time_picker_gradient.dart';
 
@@ -68,10 +70,13 @@ class TimePickerSheet extends StatefulWidget {
   State<TimePickerSheet> createState() => _TimePickerSheetState();
 }
 
-class _TimePickerSheetState extends State<TimePickerSheet> {
+class _TimePickerSheetState extends State<TimePickerSheet>
+    with TickerProviderStateMixin {
   late final FixedExtentScrollController _hourController;
   late final FixedExtentScrollController _minuteController;
   FixedExtentScrollController? _periodController;
+  late final AnimationController _textColorController;
+  late final Animation<Color?> _textColorAnimation;
 
   late final List<String> _hours;
   final List<String> _minutes = List.generate(
@@ -111,6 +116,19 @@ class _TimePickerSheetState extends State<TimePickerSheet> {
         initialItem: _selectedPeriod,
       );
     }
+    _textColorController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+      value: _selectedPeriod.toDouble(),
+    );
+    _textColorAnimation = ColorTween(
+      begin: widget.gradient.amTextColor,
+      end: widget.gradient.pmTextColor,
+    ).animate(CurvedAnimation(
+      parent: _textColorController,
+      curve: Curves.easeInOut,
+    ));
+    _textColorAnimation.addListener(() => setState(() {}));
   }
 
   @override
@@ -118,7 +136,17 @@ class _TimePickerSheetState extends State<TimePickerSheet> {
     _hourController.dispose();
     _minuteController.dispose();
     _periodController?.dispose();
+    _textColorController.dispose();
     super.dispose();
+  }
+
+  void _onPeriodChanged(int i) {
+    setState(() => _selectedPeriod = i);
+    if (i == 0) {
+      unawaited(_textColorController.reverse());
+    } else {
+      unawaited(_textColorController.forward());
+    }
   }
 
   void _onDone() {
@@ -140,6 +168,8 @@ class _TimePickerSheetState extends State<TimePickerSheet> {
   Widget build(BuildContext context) {
     final height = MediaQuery.sizeOf(context).height * 0.7;
     final wheelsHeight = height - 120;
+    final textColor =
+        _textColorAnimation.value ?? widget.gradient.amTextColor;
     return SizedBox(
       height: height,
       child: AnimatedContainer(
@@ -185,6 +215,7 @@ class _TimePickerSheetState extends State<TimePickerSheet> {
                             () => _selectedHour = i,
                           ),
                           alignment: Alignment.centerRight,
+                          textColor: textColor,
                         ),
                       ),
                       Padding(
@@ -196,7 +227,7 @@ class _TimePickerSheetState extends State<TimePickerSheet> {
                         child: Text(
                           ':',
                           style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.9),
+                            color: textColor.withValues(alpha: 0.9),
                             fontSize: 36,
                             fontWeight: FontWeight.bold,
                           ),
@@ -211,6 +242,7 @@ class _TimePickerSheetState extends State<TimePickerSheet> {
                           onSelectedItemChanged: (i) =>
                               setState(() => _selectedMinute = i),
                           alignment: Alignment.centerLeft,
+                          textColor: textColor,
                         ),
                       ),
                       if (!widget.use24Hour)
@@ -220,8 +252,8 @@ class _TimePickerSheetState extends State<TimePickerSheet> {
                             controller: _periodController!,
                             periods: _periods,
                             selectedIndex: _selectedPeriod,
-                            onSelectedItemChanged: (i) =>
-                                setState(() => _selectedPeriod = i),
+                            onSelectedItemChanged: _onPeriodChanged,
+                            textColor: textColor,
                           ),
                         ),
                     ],
@@ -274,6 +306,7 @@ class _WheelColumn extends StatefulWidget {
     required this.selectedIndex,
     required this.onSelectedItemChanged,
     required this.alignment,
+    required this.textColor,
   });
 
   final FixedExtentScrollController controller;
@@ -281,6 +314,7 @@ class _WheelColumn extends StatefulWidget {
   final int selectedIndex;
   final ValueChanged<int> onSelectedItemChanged;
   final Alignment alignment;
+  final Color textColor;
 
   @override
   State<_WheelColumn> createState() => _WheelColumnState();
@@ -339,7 +373,7 @@ class _WheelColumnState extends State<_WheelColumn> {
               child: Text(
                 widget.items[index],
                 style: TextStyle(
-                  color: Colors.white.withValues(
+                  color: widget.textColor.withValues(
                     alpha: opacity.clamp(0.0, 1.0),
                   ),
                   fontSize: fontSize,
@@ -363,12 +397,14 @@ class _PeriodColumn extends StatefulWidget {
     required this.periods,
     required this.selectedIndex,
     required this.onSelectedItemChanged,
+    required this.textColor,
   });
 
   final FixedExtentScrollController controller;
   final List<String> periods;
   final int selectedIndex;
   final ValueChanged<int> onSelectedItemChanged;
+  final Color textColor;
 
   @override
   State<_PeriodColumn> createState() => _PeriodColumnState();
@@ -422,7 +458,9 @@ class _PeriodColumnState extends State<_PeriodColumn> {
           child: Text(
             widget.periods[index],
             style: TextStyle(
-              color: Colors.white.withValues(alpha: opacity.clamp(0.0, 1.0)),
+              color: widget.textColor.withValues(
+                alpha: opacity.clamp(0.0, 1.0),
+              ),
               fontSize: fontSize,
               fontWeight: distance < 0.5 ? FontWeight.w600 : FontWeight.w400,
               height: 1,
