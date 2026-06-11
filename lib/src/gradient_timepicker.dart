@@ -121,13 +121,16 @@ class _TimePickerSheetState extends State<TimePickerSheet>
       vsync: this,
       value: _selectedPeriod.toDouble(),
     );
-    _textColorAnimation = ColorTween(
-      begin: widget.gradient.amTextColor,
-      end: widget.gradient.pmTextColor,
-    ).animate(CurvedAnimation(
-      parent: _textColorController,
-      curve: Curves.easeInOut,
-    ));
+    _textColorAnimation =
+        ColorTween(
+          begin: widget.gradient.amTextColor,
+          end: widget.gradient.pmTextColor,
+        ).animate(
+          CurvedAnimation(
+            parent: _textColorController,
+            curve: Curves.easeInOut,
+          ),
+        );
     _textColorAnimation.addListener(() => setState(() {}));
   }
 
@@ -168,8 +171,7 @@ class _TimePickerSheetState extends State<TimePickerSheet>
   Widget build(BuildContext context) {
     final height = MediaQuery.sizeOf(context).height * 0.7;
     final wheelsHeight = height - 120;
-    final textColor =
-        _textColorAnimation.value ?? widget.gradient.amTextColor;
+    final textColor = _textColorAnimation.value ?? widget.gradient.amTextColor;
     return SizedBox(
       height: height,
       child: AnimatedContainer(
