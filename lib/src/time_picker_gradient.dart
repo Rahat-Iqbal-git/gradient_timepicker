@@ -7,13 +7,21 @@ class TimePickerGradient {
   const TimePickerGradient._({
     required this.amColors,
     required this.pmColors,
+    this.amTextColor = Colors.white,
+    this.pmTextColor = Colors.white,
   });
 
-  /// The three gradient colors displayed during AM hours.
+  /// The gradient colors displayed during AM hours.
   final List<Color> amColors;
 
-  /// The three gradient colors displayed during PM hours.
+  /// The gradient colors displayed during PM hours.
   final List<Color> pmColors;
+
+  /// The base color for wheel text and the colon during AM hours.
+  final Color amTextColor;
+
+  /// The base color for wheel text and the colon during PM hours.
+  final Color pmTextColor;
 
   /// The default blue-sky AM / deep-night PM palette.
   static const defaultGradient = TimePickerGradient._(
@@ -34,11 +42,14 @@ class TimePickerGradient {
   static const frostedLight = TimePickerGradient._(
     amColors: [
       Color(0xFFEBF4F5),
+      Color(0xFFCCDEED),
       Color(0xFFB5C6E0),
     ],
     pmColors: [
       Color(0xFF1F3A3D),
+      Color(0xFF162C33),
       Color(0xFF111A28),
     ],
+    amTextColor: Color(0xFF2C2C2C),
   );
 }
