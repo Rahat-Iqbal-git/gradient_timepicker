@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+- Internalize `TimePickerSheet` widget — use `showTimePickerSheet` to open the picker
+
 ## 0.2.0
 
 - Add `use24Hour` parameter to `showTimePickerSheet` and `TimePickerSheet` for 24-hour clock support
