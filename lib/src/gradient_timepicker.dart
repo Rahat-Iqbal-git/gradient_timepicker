@@ -24,7 +24,7 @@ Future<TimeOfDay?> showTimePickerSheet({
     context: context,
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
-    builder: (_) => TimePickerSheet(
+    builder: (_) => _TimePickerSheet(
       initialTime: initialTime,
       use24Hour: use24Hour,
       buttonText: buttonText,
@@ -33,30 +33,15 @@ Future<TimeOfDay?> showTimePickerSheet({
   );
 }
 
-/// A stateful widget that renders the custom gradient time picker UI.
-///
-/// This widget displays hour, minute, and AM/PM wheels inside a modal
-/// bottom sheet, allowing the user to choose a time with a polished,
-/// animated gradient background. It is typically created by
-/// [showTimePickerSheet] and accepts an optional [initialTime]
-/// to preselect the starting value.
-///
-/// Set [use24Hour] to true to show a 24-hour clock without the AM/PM wheel.
-class TimePickerSheet extends StatefulWidget {
-  /// Creates a [TimePickerSheet], optionally pre-selecting [initialTime].
-  const TimePickerSheet({
-    super.key,
+class _TimePickerSheet extends StatefulWidget {
+  const _TimePickerSheet({
     this.initialTime,
     this.use24Hour = false,
     this.buttonText = 'Done',
     this.gradient = TimePickerGradient.defaultGradient,
   });
 
-  /// The time pre-selected when the picker opens.
-  /// Defaults to [TimeOfDay.now] if null.
   final TimeOfDay? initialTime;
-
-  /// Whether to use 24-hour format. Defaults to false.
   final bool use24Hour;
 
   /// The label displayed on the confirm button. Defaults to 'Done'.
@@ -67,10 +52,10 @@ class TimePickerSheet extends StatefulWidget {
   final TimePickerGradient gradient;
 
   @override
-  State<TimePickerSheet> createState() => _TimePickerSheetState();
+  State<_TimePickerSheet> createState() => _TimePickerSheetState();
 }
 
-class _TimePickerSheetState extends State<TimePickerSheet>
+class _TimePickerSheetState extends State<_TimePickerSheet>
     with TickerProviderStateMixin {
   late final FixedExtentScrollController _hourController;
   late final FixedExtentScrollController _minuteController;
