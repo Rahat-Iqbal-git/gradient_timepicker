@@ -1,3 +1,5 @@
 package tasks
 coverage_badge.svg
 cspell.json
+build/
+coverage/
