@@ -57,24 +57,37 @@ if (picked != null) {
 Future<TimeOfDay?> showTimePickerSheet({
   required BuildContext context,
   TimeOfDay? initialTime,
+  bool use24Hour = false,
+  String buttonText = 'Done',
+  TimePickerGradient gradient = TimePickerGradient.defaultGradient,
 })
 ```
 
-| Parameter     | Type          | Required | Description                                      |
-|---------------|---------------|----------|--------------------------------------------------|
-| `context`     | `BuildContext`| yes      | The build context used to show the bottom sheet. |
-| `initialTime` | `TimeOfDay?`  | no       | Pre-selected time. Defaults to `TimeOfDay.now()` |
+| Parameter     | Type                  | Required | Description                                                            |
+|---------------|-----------------------|----------|------------------------------------------------------------------------|
+| `context`     | `BuildContext`        | yes      | The build context used to show the bottom sheet.                       |
+| `initialTime` | `TimeOfDay?`          | no       | Pre-selected time. Defaults to `TimeOfDay.now()`                       |
+| `use24Hour`   | `bool`                | no       | Display a 24-hour clock without AM/PM. Defaults to `false`             |
+| `buttonText`  | `String`              | no       | Label for the confirm button. Defaults to `'Done'`                     |
+| `gradient`    | `TimePickerGradient`  | no       | Color palette for AM/PM states. Defaults to `TimePickerGradient.defaultGradient` |
 
 **Returns** the `TimeOfDay` chosen by the user, or `null` if the sheet is dismissed.
 
----
+#### Built-in Gradients
 
-### `TimePickerSheet`
-
-The underlying `StatefulWidget` if you need to embed the picker directly:
+| Preset                               | AM                        | PM                    |
+|--------------------------------------|---------------------------|-----------------------|
+| `TimePickerGradient.defaultGradient` | Bright blue sky           | Deep navy night       |
+| `TimePickerGradient.frostedLight`    | Light blue-white          | Dark teal             |
+| `TimePickerGradient.moonrise`        | Blush lavender            | Slate-charcoal plum   |
+| `TimePickerGradient.mystic`          | Hazy grey-blue to mist    | Grey-blue to deep slate |
+| `TimePickerGradient.opal`            | Pale lime-yellow to mauve | Olive-green to mauve  |
 
 ```dart
-TimePickerSheet(initialTime: const TimeOfDay(hour: 9, minute: 0))
+final TimeOfDay? picked = await showTimePickerSheet(
+  context: context,
+  gradient: TimePickerGradient.frostedLight,
+);
 ```
 
 ---

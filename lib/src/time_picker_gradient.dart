@@ -40,6 +40,52 @@ class TimePickerGradient {
     pmTextColor: Colors.white,
   );
 
+  /// A soft dawn-to-dusk palette: blush lavender for AM,
+  /// deep indigo-plum for PM.
+  static const moonrise = TimePickerGradient._(
+    amColors: [
+      Color(0xFFDAE2F8),
+      Color(0xFFD8C3CE),
+      Color(0xFFD6A4A4),
+    ],
+    pmColors: [
+      Color(0xFF253247),
+      Color(0xFF31313F),
+      Color(0xFF4A2F2F),
+    ],
+    amTextColor: Color(0xFF2C2C2C),
+    pmTextColor: Colors.white,
+  );
+
+  /// A pearlescent palette: pale lime-yellow to muted mauve for AM,
+  /// olive-green to muted mauve for PM.
+  static const opal = TimePickerGradient._(
+    amColors: [
+      Color(0xFFE7E9BB),
+      Color(0xFF827D8F),
+    ],
+    pmColors: [
+      Color(0xFF7A7840),
+      Color(0xFF3C3849),
+    ],
+    amTextColor: Color(0xFF2C2C2C),
+    pmTextColor: Colors.white,
+  );
+
+  /// A misty slate palette: hazy grey-blue for AM, deep slate for PM.
+  static const mystic = TimePickerGradient._(
+    amColors: [
+      Color(0xFF757F9A),
+      Color(0xFFD7DDE8),
+    ],
+    pmColors: [
+      Color(0xFF757F9A),
+      Color(0xFF2C3445),
+    ],
+    amTextColor: Color(0xFF2C2C2C),
+    pmTextColor: Colors.white,
+  );
+
   /// A soft frosted-glass palette: light blue-white for AM,
   /// dark teal-navy for PM.
   static const frostedLight = TimePickerGradient._(
