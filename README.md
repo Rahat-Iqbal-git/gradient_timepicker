@@ -75,8 +75,17 @@ Future<TimeOfDay?> showTimePickerSheet({
 
 #### Built-in Gradients
 
-- `TimePickerGradient.defaultGradient` — Bright blue AM, deep navy PM
-- `TimePickerGradient.frostedLight` — Light blue-white AM, dark teal PM
+| Preset                               | AM                   | PM               |
+|--------------------------------------|----------------------|------------------|
+| `TimePickerGradient.defaultGradient` | Bright blue sky      | Deep navy night  |
+| `TimePickerGradient.frostedLight`    | Light blue-white     | Dark teal        |
+
+```dart
+final TimeOfDay? picked = await showTimePickerSheet(
+  context: context,
+  gradient: TimePickerGradient.frostedLight,
+);
+```
 
 ---
 
