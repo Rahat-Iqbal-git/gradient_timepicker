@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.0
+
+- Added `TimePickerGradient.moonrise` preset — blush lavender AM, slate-charcoal PM
+- Added `TimePickerGradient.mystic` preset — hazy grey-blue AM, deep slate PM
+- Added `TimePickerGradient.opal` preset — pale lime-yellow AM, olive-green PM
+
 ## 0.2.1
 
 - Internalize `TimePickerSheet` widget — use `showTimePickerSheet` to open the picker
