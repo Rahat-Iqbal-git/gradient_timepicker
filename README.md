@@ -75,10 +75,13 @@ Future<TimeOfDay?> showTimePickerSheet({
 
 #### Built-in Gradients
 
-| Preset                               | AM                   | PM               |
-|--------------------------------------|----------------------|------------------|
-| `TimePickerGradient.defaultGradient` | Bright blue sky      | Deep navy night  |
-| `TimePickerGradient.frostedLight`    | Light blue-white     | Dark teal        |
+| Preset                               | AM                        | PM                    |
+|--------------------------------------|---------------------------|-----------------------|
+| `TimePickerGradient.defaultGradient` | Bright blue sky           | Deep navy night       |
+| `TimePickerGradient.frostedLight`    | Light blue-white          | Dark teal             |
+| `TimePickerGradient.moonrise`        | Blush lavender            | Slate-charcoal plum   |
+| `TimePickerGradient.mystic`          | Hazy grey-blue to mist    | Grey-blue to deep slate |
+| `TimePickerGradient.opal`            | Pale lime-yellow to mauve | Olive-green to mauve  |
 
 ```dart
 final TimeOfDay? picked = await showTimePickerSheet(
