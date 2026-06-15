@@ -3,6 +3,9 @@
 ## 0.2.1
 
 - Internalize `TimePickerSheet` widget — use `showTimePickerSheet` to open the picker
+- Add `buttonText` parameter to customize the confirm button label
+- Add `gradient` parameter with `TimePickerGradient` presets for custom color schemes
+- Animate text color smoothly between AM and PM gradient schemes
 
 ## 0.2.0
 
