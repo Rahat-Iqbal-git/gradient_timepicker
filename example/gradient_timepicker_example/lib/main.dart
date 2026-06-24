@@ -99,53 +99,49 @@ class _HomePageState extends State<HomePage> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.black87,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        surfaceTintColor: Colors.transparent,
-        shadowColor: Colors.transparent,
+        // backgroundColor: Colors.transparent,
+        // foregroundColor: Colors.black87,
+        // elevation: 0,
+        // scrolledUnderElevation: 0,
+        // surfaceTintColor: Colors.transparent,
+        // shadowColor: Colors.transparent,
       ),
-      body: Stack(
-        children: [
-          ShaderMask(
-            shaderCallback: (bounds) => LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Colors.white.withValues(alpha: 0),
-                Colors.white,
-              ],
-              stops: [0.0, 0.12 * _topEffect],
-            ).createShader(bounds),
-            blendMode: BlendMode.dstIn,
-            child: ListView.separated(
-              controller: _scrollController,
-              padding: EdgeInsets.only(
-                top: MediaQuery.of(context).padding.top + kToolbarHeight + 32,
-                bottom: 32,
-              ),
-              itemCount: 6,
-              separatorBuilder: (_, _) => const SizedBox(height: 32),
-              itemBuilder: (context, index) {
-                // Alternate between the 12-hour and 24-hour cards.
-                return index.isEven
-                    ? _PickerCard(
-                        label: '12-hour',
-                        timeLabel: _format12(_selectedTime12),
-                        hasSelection: _selectedTime12 != null,
-                        onTap: _openTimePicker12,
-                      )
-                    : _PickerCard(
-                        label: '24-hour',
-                        timeLabel: _format24(_selectedTime24),
-                        hasSelection: _selectedTime24 != null,
-                        onTap: _openTimePicker24,
-                      );
-              },
-            ),
+      body: ShaderMask(
+        shaderCallback: (bounds) => LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.white.withValues(alpha: 0),
+            Colors.white,
+          ],
+          stops: [0.0, 0.12 * _topEffect],
+        ).createShader(bounds),
+        blendMode: BlendMode.dstIn,
+        child: ListView.separated(
+          controller: _scrollController,
+          padding: EdgeInsets.only(
+            top: MediaQuery.of(context).padding.top + kToolbarHeight + 32,
+            bottom: 32,
           ),
-        ],
+          itemCount: 6,
+          separatorBuilder: (_, _) => const SizedBox(height: 32),
+          itemBuilder: (context, index) {
+            // Alternate between the 12-hour and 24-hour cards.
+            return index.isEven
+                ? _PickerCard(
+                    label: '12-hour',
+                    timeLabel: _format12(_selectedTime12),
+                    hasSelection: _selectedTime12 != null,
+                    onTap: _openTimePicker12,
+                  )
+                : _PickerCard(
+                    label: '24-hour',
+                    timeLabel: _format24(_selectedTime24),
+                    hasSelection: _selectedTime24 != null,
+                    onTap: _openTimePicker24,
+                  );
+          },
+        ),
       ),
     );
   }
@@ -206,4 +202,3 @@ class _PickerCard extends StatelessWidget {
     );
   }
 }
-
