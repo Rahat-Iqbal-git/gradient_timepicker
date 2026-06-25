@@ -67,38 +67,60 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: const Color(0xFFF5F5F5),
       backgroundColor: const Color(0xFFF2F2F7),
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: const Text(
           'Time Picker Demo',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.black87,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+        shadowColor: Colors.transparent,
       ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 24),
-        children: [
-          _GradientPresetsRow(
-            selectedGradient: _selectedGradient,
-            onSelect: (g) => setState(() => _selectedGradient = g),
+      body: ShaderMask(
+        shaderCallback: (bounds) {
+          final appBarFraction =
+              (MediaQuery.of(context).padding.top + kToolbarHeight) / bounds.height;
+          return LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.transparent, Colors.white],
+            stops: [0.0, appBarFraction],
+          ).createShader(bounds);
+        },
+        blendMode: BlendMode.dstIn,
+        child: ListView(
+          padding: EdgeInsets.only(
+            top: MediaQuery.of(context).padding.top + kToolbarHeight + 24,
+            bottom: 24,
           ),
-          const SizedBox(height: 40),
-          _PickerCard(
-            label: '12-hour',
-            timeLabel: _format12(_selectedTime12),
-            hasSelection: _selectedTime12 != null,
-            onTap: _openTimePicker12,
-          ),
-          const SizedBox(height: 16),
-          _PickerCard(
-            label: '24-hour',
-            timeLabel: _format24(_selectedTime24),
-            hasSelection: _selectedTime24 != null,
-            onTap: _openTimePicker24,
-          ),
-          SizedBox(height: 500),
-        ],
+          children: [
+            _GradientPresetsRow(
+              selectedGradient: _selectedGradient,
+              onSelect: (g) => setState(() => _selectedGradient = g),
+            ),
+            const SizedBox(height: 40),
+            _PickerCard(
+              label: '12-hour',
+              timeLabel: _format12(_selectedTime12),
+              hasSelection: _selectedTime12 != null,
+              onTap: _openTimePicker12,
+            ),
+            const SizedBox(height: 16),
+            _PickerCard(
+              label: '24-hour',
+              timeLabel: _format24(_selectedTime24),
+              hasSelection: _selectedTime24 != null,
+              onTap: _openTimePicker24,
+            ),
+            const SizedBox(height: 500),
+          ],
+        ),
       ),
     );
   }
