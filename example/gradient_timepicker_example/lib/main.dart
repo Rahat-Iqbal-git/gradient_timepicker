@@ -9,7 +9,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(title: 'Gradient Time Picker Example', home: HomePage());
+    return const MaterialApp(
+      title: 'Gradient Time Picker Example',
+      home: HomePage(),
+    );
   }
 }
 
@@ -135,7 +138,10 @@ class _HomePageState extends State<HomePage> {
 }
 
 class _GradientPresetsRow extends StatelessWidget {
-  const _GradientPresetsRow({required this.selectedGradient, required this.onSelect});
+  const _GradientPresetsRow({
+    required this.selectedGradient,
+    required this.onSelect,
+  });
 
   final TimePickerGradient selectedGradient;
   final ValueChanged<TimePickerGradient> onSelect;
@@ -236,7 +242,12 @@ class _GradientCardState extends State<_GradientCard>
     super.didUpdateWidget(oldWidget);
     if (oldWidget.isSelected != widget.isSelected) {
       _controller.animateWith(
-        SpringSimulation(_spring, _controller.value, widget.isSelected ? 1.0 : 0.0, 0),
+        SpringSimulation(
+          _spring,
+          _controller.value,
+          widget.isSelected ? 1.0 : 0.0,
+          0,
+        ),
       );
     }
   }
@@ -257,7 +268,8 @@ class _GradientCardState extends State<_GradientCard>
           final t = _controller.value.clamp(0.0, 1.5);
           return SizedBox(
             width: _unselectedWidth + (_selectedWidth - _unselectedWidth) * t,
-            height: _unselectedHeight + (_selectedHeight - _unselectedHeight) * t,
+            height:
+                _unselectedHeight + (_selectedHeight - _unselectedHeight) * t,
             child: child,
           );
         },
