@@ -22,33 +22,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   TimeOfDay? _selectedTime12;
   TimeOfDay? _selectedTime24;
-
-  final ScrollController _scrollController = ScrollController();
-  double _topEffect = 0;
-  static const double _effectRampDistance = 32;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_handleScroll);
-  }
-
-  @override
-  void dispose() {
-    _scrollController.removeListener(_handleScroll);
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _handleScroll() {
-    final next = (_scrollController.offset / _effectRampDistance).clamp(0.0, 1.0);
-    if (next != _topEffect) setState(() => _topEffect = next);
-  }
+  TimePickerGradient _selectedGradient = TimePickerGradient.defaultGradient;
 
   Future<void> _openTimePicker12() async {
     final result = await showTimePickerSheet(
       context: context,
       initialTime: _selectedTime12,
+      gradient: _selectedGradient,
     );
     if (result != null) {
       setState(() => _selectedTime12 = result);
@@ -60,6 +40,7 @@ class _HomePageState extends State<HomePage> {
       context: context,
       initialTime: _selectedTime24,
       use24Hour: true,
+      gradient: _selectedGradient,
     );
     if (result != null) {
       setState(() => _selectedTime24 = result);
@@ -97,7 +78,10 @@ class _HomePageState extends State<HomePage> {
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 24),
         children: [
-          const _GradientPresetsRow(),
+          _GradientPresetsRow(
+            selectedGradient: _selectedGradient,
+            onSelect: (g) => setState(() => _selectedGradient = g),
+          ),
           const SizedBox(height: 40),
           _PickerCard(
             label: '12-hour',
@@ -112,6 +96,7 @@ class _HomePageState extends State<HomePage> {
             hasSelection: _selectedTime24 != null,
             onTap: _openTimePicker24,
           ),
+          SizedBox(height: 500),
         ],
       ),
     );
@@ -119,7 +104,10 @@ class _HomePageState extends State<HomePage> {
 }
 
 class _GradientPresetsRow extends StatelessWidget {
-  const _GradientPresetsRow();
+  const _GradientPresetsRow({required this.selectedGradient, required this.onSelect});
+
+  final TimePickerGradient selectedGradient;
+  final ValueChanged<TimePickerGradient> onSelect;
 
   static const _presets = [
     (name: 'Default', gradient: TimePickerGradient.defaultGradient),
@@ -148,16 +136,24 @@ class _GradientPresetsRow extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         SizedBox(
-          height: 150,
-          child: ListView(
+          height: 165,
+          child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            children: [
-              for (final preset in _presets) ...[
-                _GradientCard(name: preset.name, gradient: preset.gradient),
-                const SizedBox(width: 12),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                for (final preset in _presets) ...[
+                  _GradientCard(
+                    name: preset.name,
+                    gradient: preset.gradient,
+                    isSelected: preset.gradient == selectedGradient,
+                    onTap: () => onSelect(preset.gradient),
+                  ),
+                  const SizedBox(width: 12),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ],
@@ -166,63 +162,81 @@ class _GradientPresetsRow extends StatelessWidget {
 }
 
 class _GradientCard extends StatelessWidget {
-  const _GradientCard({required this.name, required this.gradient});
+  const _GradientCard({
+    required this.name,
+    required this.gradient,
+    required this.isSelected,
+    required this.onTap,
+  });
 
   final String name;
   final TimePickerGradient gradient;
+  final bool isSelected;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
-      child: SizedBox(
-        width: 100,
-        height: 150,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            Column(
-              children: [
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: gradient.amColors,
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+        width: isSelected ? 116 : 100,
+        height: isSelected ? 200 : 150,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Column(
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: gradient.amColors,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: gradient.pmColors,
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: gradient.pmColors,
+                        ),
                       ),
                     ),
                   ),
+                ],
+              ),
+              if (isSelected)
+                const Center(
+                  child: Icon(Icons.check_circle, color: Colors.white, size: 28,
+                    shadows: [Shadow(blurRadius: 8, color: Colors.black38)],
+                  ),
                 ),
-              ],
-            ),
-            Positioned(
-              bottom: 10,
-              left: 0,
-              right: 0,
-              child: Text(
-                name,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                  shadows: [Shadow(blurRadius: 4, color: Colors.black54)],
+              Positioned(
+                bottom: 10,
+                left: 0,
+                right: 0,
+                child: Text(
+                  name,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                    shadows: [Shadow(blurRadius: 4, color: Colors.black54)],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
