@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 import 'package:gradient_timepicker/gradient_timepicker.dart';
 
 void main() => runApp(const MyApp());
@@ -161,7 +162,7 @@ class _GradientPresetsRow extends StatelessWidget {
   }
 }
 
-class _GradientCard extends StatelessWidget {
+class _GradientCard extends StatefulWidget {
   const _GradientCard({
     required this.name,
     required this.gradient,
@@ -175,14 +176,61 @@ class _GradientCard extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
+  State<_GradientCard> createState() => _GradientCardState();
+}
+
+class _GradientCardState extends State<_GradientCard>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  static const double _unselectedWidth = 100;
+  static const double _selectedWidth = 116;
+  static const double _unselectedHeight = 150;
+  static const double _selectedHeight = 200;
+
+  static final _spring = SpringDescription.withDampingRatio(
+    mass: 1,
+    stiffness: 400,
+    ratio: 0.6,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController.unbounded(vsync: this)
+      ..value = widget.isSelected ? 1.0 : 0.0;
+  }
+
+  @override
+  void didUpdateWidget(_GradientCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isSelected != widget.isSelected) {
+      _controller.animateWith(
+        SpringSimulation(_spring, _controller.value, widget.isSelected ? 1.0 : 0.0, 0),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeOut,
-        width: isSelected ? 116 : 100,
-        height: isSelected ? 200 : 150,
+      onTap: widget.onTap,
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          final t = _controller.value.clamp(0.0, 1.5);
+          return SizedBox(
+            width: _unselectedWidth + (_selectedWidth - _unselectedWidth) * t,
+            height: _unselectedHeight + (_selectedHeight - _unselectedHeight) * t,
+            child: child,
+          );
+        },
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
           child: Stack(
@@ -196,7 +244,7 @@ class _GradientCard extends StatelessWidget {
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
-                          colors: gradient.amColors,
+                          colors: widget.gradient.amColors,
                         ),
                       ),
                     ),
@@ -207,16 +255,19 @@ class _GradientCard extends StatelessWidget {
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
-                          colors: gradient.pmColors,
+                          colors: widget.gradient.pmColors,
                         ),
                       ),
                     ),
                   ),
                 ],
               ),
-              if (isSelected)
+              if (widget.isSelected)
                 const Center(
-                  child: Icon(Icons.check_circle, color: Colors.white, size: 28,
+                  child: Icon(
+                    Icons.check_circle,
+                    color: Colors.white,
+                    size: 28,
                     shadows: [Shadow(blurRadius: 8, color: Colors.black38)],
                   ),
                 ),
@@ -225,7 +276,7 @@ class _GradientCard extends StatelessWidget {
                 left: 0,
                 right: 0,
                 child: Text(
-                  name,
+                  widget.name,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 12,
@@ -261,61 +312,61 @@ class _PickerCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-      padding: const EdgeInsets.all(16),
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
-              color: Colors.black45,
-              letterSpacing: 1,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                timeLabel,
-                style: TextStyle(
-                  fontSize: 32,
-                  // fontWeight: FontWeight.w600,
-                  color: hasSelection ? Colors.black87 : Colors.black26,
-                ),
+        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: Colors.black45,
+                letterSpacing: 1,
               ),
-              Icon(Icons.chevron_right_outlined, color: Colors.black26),
-            ],
-          ),
-          // const SizedBox(height: 16),
-          // SizedBox(
-          //   width: double.maxFinite,
-          //   child: ElevatedButton(
-          //     onPressed: onTap,
-          //     style: ElevatedButton.styleFrom(
-          //       backgroundColor: Colors.grey,
-          //       foregroundColor: Colors.white,
-          //       minimumSize: const Size(200, 52),
-          //       shape: const StadiumBorder(),
-          //       elevation: 0,
-          //     ),
-          //     child: const Text(
-          //       'Select time',
-          //       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-          //     ),
-          //   ),
-          // ),
-        ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  timeLabel,
+                  style: TextStyle(
+                    fontSize: 32,
+                    // fontWeight: FontWeight.w600,
+                    color: hasSelection ? Colors.black87 : Colors.black26,
+                  ),
+                ),
+                Icon(Icons.chevron_right_outlined, color: Colors.black26),
+              ],
+            ),
+            // const SizedBox(height: 16),
+            // SizedBox(
+            //   width: double.maxFinite,
+            //   child: ElevatedButton(
+            //     onPressed: onTap,
+            //     style: ElevatedButton.styleFrom(
+            //       backgroundColor: Colors.grey,
+            //       foregroundColor: Colors.white,
+            //       minimumSize: const Size(200, 52),
+            //       shape: const StadiumBorder(),
+            //       elevation: 0,
+            //     ),
+            //     child: const Text(
+            //       'Select time',
+            //       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            //     ),
+            //   ),
+            // ),
+          ],
+        ),
       ),
-    ),
     );
   }
 }
