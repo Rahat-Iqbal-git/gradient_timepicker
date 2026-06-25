@@ -82,45 +82,53 @@ class _HomePageState extends State<HomePage> {
         surfaceTintColor: Colors.transparent,
         shadowColor: Colors.transparent,
       ),
-      body: ShaderMask(
-        shaderCallback: (bounds) {
-          final appBarFraction =
-              (MediaQuery.of(context).padding.top + kToolbarHeight) / bounds.height;
-          return LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.transparent, Colors.white],
-            stops: [0.0, appBarFraction],
-          ).createShader(bounds);
-        },
-        blendMode: BlendMode.dstIn,
-        child: ListView(
-          padding: EdgeInsets.only(
-            top: MediaQuery.of(context).padding.top + kToolbarHeight + 24,
-            bottom: 24,
+      body: Stack(
+        children: [
+          ListView(
+            padding: EdgeInsets.only(
+              top: MediaQuery.of(context).padding.top + kToolbarHeight + 24,
+              bottom: 24,
+            ),
+            children: [
+              _GradientPresetsRow(
+                selectedGradient: _selectedGradient,
+                onSelect: (g) => setState(() => _selectedGradient = g),
+              ),
+              const SizedBox(height: 40),
+              _PickerCard(
+                label: '12-hour',
+                timeLabel: _format12(_selectedTime12),
+                hasSelection: _selectedTime12 != null,
+                onTap: _openTimePicker12,
+              ),
+              const SizedBox(height: 16),
+              _PickerCard(
+                label: '24-hour',
+                timeLabel: _format24(_selectedTime24),
+                hasSelection: _selectedTime24 != null,
+                onTap: _openTimePicker24,
+              ),
+              const SizedBox(height: 500),
+            ],
           ),
-          children: [
-            _GradientPresetsRow(
-              selectedGradient: _selectedGradient,
-              onSelect: (g) => setState(() => _selectedGradient = g),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: MediaQuery.of(context).padding.top + kToolbarHeight,
+            child: const IgnorePointer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Color(0xFFF2F2F7), Color(0x00F2F2F7)],
+                  ),
+                ),
+              ),
             ),
-            const SizedBox(height: 40),
-            _PickerCard(
-              label: '12-hour',
-              timeLabel: _format12(_selectedTime12),
-              hasSelection: _selectedTime12 != null,
-              onTap: _openTimePicker12,
-            ),
-            const SizedBox(height: 16),
-            _PickerCard(
-              label: '24-hour',
-              timeLabel: _format24(_selectedTime24),
-              hasSelection: _selectedTime24 != null,
-              onTap: _openTimePicker24,
-            ),
-            const SizedBox(height: 500),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
