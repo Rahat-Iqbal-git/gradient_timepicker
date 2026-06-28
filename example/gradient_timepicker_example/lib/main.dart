@@ -112,6 +112,11 @@ class _HomePageState extends State<HomePage> {
                 onTap: _openTimePicker24,
               ),
               const SizedBox(height: 500),
+              Text(
+                "Made by Rahat Iqbal",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black),
+              ),
             ],
           ),
           Positioned(
