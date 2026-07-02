@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.1
+
+- Reworked example app UI (spring animation, fading app bar, gradient overlay)
+- No changes to the package API
+
 ## 0.3.0
 
 - Added `TimePickerGradient.moonrise` preset — blush lavender AM, slate-charcoal PM
